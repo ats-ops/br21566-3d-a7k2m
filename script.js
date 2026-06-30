@@ -1,6 +1,6 @@
 window.addEventListener('load', () => {
 const viewer = document.getElementById('viewer');
-viewer.cameraOrbit = '45deg 25deg 2.2m';
+viewer.cameraOrbit = '45deg 25deg ';
 viewer.filedOfView = '30deg';
 });
 
