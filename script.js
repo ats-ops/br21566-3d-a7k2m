@@ -1,3 +1,9 @@
+window.addEventListener('load', () => {
+const viewer = document.getElementById('viewer');
+viewer.cameraOrbit = '45deg 25deg 2.2m';
+viewer.filedOfView = '30deg';
+});
+
 const viewer=document.getElementById("viewer");
 
 viewer.addEventListener("load",()=>{
