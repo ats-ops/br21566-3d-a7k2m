@@ -72,13 +72,29 @@ const loader=new GLTFLoader();
 
 
 loader.load(
-    "./models/model.glb",
+"./models/model.glb",
 
-    gltf=>{
+gltf=>{
 
-        model=gltf.scene;
+console.log("GLB読み込み成功");
 
-        scene.add(model);
+model=gltf.scene;
+
+scene.add(model);
+
+
+},
+
+error=>{
+
+console.error(
+"GLB読み込み失敗",
+error
+);
+
+}
+
+);
 
 
         // サイズ調整
