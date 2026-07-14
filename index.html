@@ -2,24 +2,85 @@
 <html lang="ja">
 
 <head>
+
 <meta charset="UTF-8">
 
-<title>3D Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>3D Coordinate Viewer</title>
+
+
+<!-- Three.js import設定 -->
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.167/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.167/examples/jsm/"
+    "three":
+    "https://cdn.jsdelivr.net/npm/three@0.167/build/three.module.js",
+
+    "three/addons/":
+    "https://cdn.jsdelivr.net/npm/three@0.167/examples/jsm/"
   }
 }
 </script>
 
+
 <style>
+
 body{
+
     margin:0;
+    overflow:hidden;
+    background:#222;
+
 }
+
+
+#panel{
+
+    position:absolute;
+
+    top:10px;
+
+    left:10px;
+
+    background:white;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    font-family:
+    Arial,
+    sans-serif;
+
+    font-size:14px;
+
+    z-index:10;
+
+}
+
+
+
+#title{
+
+    font-weight:bold;
+
+    margin-bottom:8px;
+
+}
+
+
+#pos{
+
+    margin-top:10px;
+
+    line-height:1.6;
+
+}
+
+
 </style>
+
 
 </head>
 
@@ -27,7 +88,35 @@ body{
 <body>
 
 
-<script type="module" src="./viewer.js"></script>
+<div id="panel">
+
+<div id="title">
+3D座標取得
+</div>
+
+
+モデルをクリックしてください
+
+
+<div id="pos">
+
+---
+
+</div>
+
+
+</div>
+
+
+
+
+<!-- viewer.js -->
+
+<script
+type="module"
+src="./viewer.js">
+</script>
+
 
 
 </body>
