@@ -1,136 +1,235 @@
+// ===============================
+// Three.js
+// ===============================
+
 import * as THREE from "three";
 
-import { OrbitControls } 
+import { OrbitControls }
 from "three/addons/controls/OrbitControls.js";
 
 import { GLTFLoader }
 from "three/addons/loaders/GLTFLoader.js";
 
-// シーン
+
+// ===============================
+// 基本設定
+// ===============================
+
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x222222);
+
+scene.background =
+new THREE.Color(0x222222);
 
 
-// カメラ
-const camera = new THREE.PerspectiveCamera(
+
+const camera =
+new THREE.PerspectiveCamera(
     45,
-    window.innerWidth/window.innerHeight,
+    window.innerWidth /
+    window.innerHeight,
     0.1,
-    1000
+    5000
 );
 
-camera.position.set(0,0,200);
+
+camera.position.set(
+    0,
+    0,
+    100
+);
 
 
-// レンダラー
-const renderer = new THREE.WebGLRenderer({
+
+// ===============================
+// Renderer
+// ===============================
+
+const renderer =
+new THREE.WebGLRenderer({
     antialias:true
 });
+
+
+renderer.setPixelRatio(
+    window.devicePixelRatio
+);
+
 
 renderer.setSize(
     window.innerWidth,
     window.innerHeight
 );
 
-document.body.appendChild(renderer.domElement);
 
-
-// 操作
-const controls =
-new OrbitControls(camera,renderer.domElement);
-
-controls.enableDamping=true;
-
-
-// ライト
-
-const light = new THREE.DirectionalLight(
-    0xffffff,
-    3
+document.body.appendChild(
+    renderer.domElement
 );
 
-light.position.set(10,20,30);
 
-scene.add(light);
+
+// ===============================
+// Controls
+// ===============================
+
+const controls =
+new OrbitControls(
+    camera,
+    renderer.domElement
+);
+
+
+controls.enableDamping = true;
+
+controls.dampingFactor = 0.05;
+
+
+
+// ===============================
+// Light
+// ===============================
+
 
 scene.add(
     new THREE.AmbientLight(
         0xffffff,
-        1
+        1.5
     )
 );
 
 
+
+const light =
+new THREE.DirectionalLight(
+    0xffffff,
+    2
+);
+
+
+light.position.set(
+    50,
+    100,
+    50
+);
+
+
+scene.add(light);
+
+
+
+// ===============================
 // GLB読み込み
+// ===============================
 
-let model;
+let model = null;
 
 
-const loader=new GLTFLoader();
+const loader =
+new GLTFLoader();
+
 
 
 loader.load(
 
-"./models/model.glb",
-
-gltf=>{
-
-console.log("モデル読み込み成功");
-
-model=gltf.scene;
-
-scene.add(model);
+    "./models/model.glb",
 
 
-// サイズ確認
-const box =
-new THREE.Box3()
-.setFromObject(model);
+    (gltf)=>{
 
 
-const size =
-box.getSize(
-new THREE.Vector3()
+        console.log(
+            "GLB読み込み成功"
+        );
+
+
+        model =
+        gltf.scene;
+
+
+
+        scene.add(model);
+
+
+
+        // -----------------------
+        // サイズ調整
+        // -----------------------
+
+        const box =
+        new THREE.Box3()
+        .setFromObject(model);
+
+
+
+        const center =
+        box.getCenter(
+            new THREE.Vector3()
+        );
+
+
+        const size =
+        box.getSize(
+            new THREE.Vector3()
+        );
+
+
+
+        // 原点へ移動
+
+        model.position.sub(center);
+
+
+
+        // カメラ距離調整
+
+        const maxSize =
+        Math.max(
+            size.x,
+            size.y,
+            size.z
+        );
+
+
+        camera.position.set(
+            0,
+            0,
+            maxSize * 2
+        );
+
+
+        controls.update();
+
+
+
+        console.log(
+            "サイズ",
+            size
+        );
+
+    },
+
+
+    undefined,
+
+
+    (error)=>{
+
+        console.error(
+            "GLB読み込み失敗",
+            error
+        );
+
+    }
+
 );
 
 
-console.log("モデルサイズ",size);
 
 
-// 中心へ移動
-const center =
-box.getCenter(
-new THREE.Vector3()
-);
+// ===============================
+// 座標取得
+// ===============================
 
 
-model.position.sub(center);
-
-
-// カメラ調整
-camera.position.set(
-0,
-0,
-size.length()*1.5
-);
-
-
-},
-
-error=>{
-
-console.error(
-"読み込み失敗",
-error
-);
-
-}
-
-);
-
-
-
-// Raycaster
 const raycaster =
 new THREE.Raycaster();
 
@@ -140,156 +239,214 @@ new THREE.Vector2();
 
 
 
-// 点表示用
+window.addEventListener(
+"click",
 
-function addPoint(position){
+(event)=>{
+
+
+    mouse.x =
+    (event.clientX /
+    window.innerWidth) * 2 - 1;
+
+
+
+    mouse.y =
+    -(event.clientY /
+    window.innerHeight) * 2 + 1;
+
+
+
+    raycaster.setFromCamera(
+        mouse,
+        camera
+    );
+
+
+
+    if(!model)
+        return;
+
+
+
+    const hit =
+    raycaster.intersectObject(
+        model,
+        true
+    );
+
+
+
+    console.log(
+        "hit:",
+        hit.length
+    );
+
+
+
+    if(hit.length > 0){
+
+
+        const point =
+        hit[0].point;
+
+
+
+        console.log(
+            "座標",
+            point
+        );
+
+
+
+        showPosition(
+            point
+        );
+
+
+
+        addMarker(
+            point
+        );
+
+    }
+
+
+});
+
+
+
+
+// ===============================
+// 座標表示
+// ===============================
+
+
+function showPosition(p){
+
+
+    let info =
+    document.getElementById(
+        "pos"
+    );
+
+
+    if(info){
+
+        info.innerHTML =
+
+        `
+        X : ${p.x.toFixed(3)}
+        <br>
+        Y : ${p.y.toFixed(3)}
+        <br>
+        Z : ${p.z.toFixed(3)}
+        `;
+
+    }
+
+}
+
+
+
+
+// ===============================
+// ピン表示
+// ===============================
+
+
+function addMarker(position){
 
 
     const geometry =
     new THREE.SphereGeometry(
         1.5,
-        16,
-        16
+        20,
+        20
     );
 
 
     const material =
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshBasicMaterial(
+    {
         color:0xff0000
     });
 
 
-    const point =
+    const marker =
     new THREE.Mesh(
         geometry,
         material
     );
 
 
-    point.position.copy(position);
+    marker.position.copy(
+        position
+    );
 
 
-    scene.add(point);
-
-}
-
-
-
-
-// クリック処理
-
-window.addEventListener(
-"click",
-
-event=>{
-
-
-mouse.x =
-(event.clientX/window.innerWidth)*2-1;
-
-
-mouse.y =
--(event.clientY/window.innerHeight)*2+1;
-
-
-
-raycaster.setFromCamera(
-    mouse,
-    camera
-);
-
-
-
-if(model){
-
-const hit =
-raycaster.intersectObject(
-    model,
-    true
-);
-
-
-if(hit.length){
-
-
-const p =
-hit[0].point;
-
-
-// 点追加
-
-addPoint(p);
-
-
-
-// 座標表示
-
-document.getElementById("pos")
-.innerHTML=
-
-`
-X:${p.x.toFixed(3)}
-<br>
-Y:${p.y.toFixed(3)}
-<br>
-Z:${p.z.toFixed(3)}
-`;
-
-
-
-console.log(
-"coordinate",
-p
-);
-
+    scene.add(
+        marker
+    );
 
 }
 
 
-}
 
+// ===============================
+// Resize
+// ===============================
 
-});
-
-
-
-
-// リサイズ
 
 window.addEventListener(
 "resize",
 
 ()=>{
 
+
 camera.aspect =
-window.innerWidth/window.innerHeight;
+window.innerWidth /
+window.innerHeight;
+
 
 camera.updateProjectionMatrix();
 
 
+
 renderer.setSize(
-window.innerWidth,
-window.innerHeight
+    window.innerWidth,
+    window.innerHeight
 );
+
 
 });
 
 
 
 
-// 描画
+// ===============================
+// Animation
+// ===============================
+
 
 function animate(){
 
-requestAnimationFrame(animate);
+
+requestAnimationFrame(
+    animate
+);
+
 
 controls.update();
 
+
 renderer.render(
-scene,
-camera
+    scene,
+    camera
 );
 
+
 }
+
 
 animate();
