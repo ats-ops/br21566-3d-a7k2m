@@ -1,121 +1,38 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Coordinate Picker</title>
 
-<title>ヒグマ頭骨3Dモデル</title>
+<style>
+body {
+    margin:0;
+    overflow:hidden;
+}
 
-<link rel="stylesheet" href="style.css">
-
-<script type="module"
-src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
-</script>
+#info {
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:white;
+    padding:10px;
+    border-radius:8px;
+    font-family:sans-serif;
+}
+</style>
 
 </head>
 
 <body>
 
-<header>
-
-<h1>ヒグマ頭骨 3Dモデル</h1>
-
-<p>
-閲覧資料
-</p>
-
-</header>
-
-<main>
-
-<model-viewer
-
-id="viewer"
-
-src="3593_bear.glb"
-
-camera-controls
-
-touch-action="pan-y"
-
-auto-rotate
-rotation-per-second="12deg"
-shadow-intensity="1.5"
-environment-image="neutral"
-exposure="0.55"
-tone-mapping="neutral"
-camer-orbit="45deg 25deg "
-field-of-view="30deg"
-interaction-prompt="auto"
-
-ar
-
-ar-modes="webxr scene-viewer quick-look"
-
-loading="eager"
-
-reveal="auto">
-
-</model-viewer>
-
-</main>
-
-<footer>
-
-<div class="guide">
-
-<h2>操作方法</h2>
-
-<ul>
-
-<li>ドラッグ：回転</li>
-
-<li>ホイール：拡大・縮小</li>
-
-<li>Shift＋ドラッグ：移動</li>
-
-<li>スマートフォンでは2本指で拡大縮小できます</li>
-
-</ul>
-
+<div id="info">
+クリックして座標取得
+<br>
+<span id="pos">---</span>
 </div>
 
-<div class="info">
 
-<h2>標本情報</h2>
-
-<table>
-
-<tr>
-<th>標本名</th>
-<td>ヒグマ頭骨</td>
-</tr>
-
-<tr>
-<th>取得方法</th>
-<td>3Dスキャン（Revo Scan）</td>
-</tr>
-
-<tr>
-<th>形式</th>
-<td>GLB</td>
-</tr>
-
-<tr>
-<th>用途</th>
-<td>閲覧資料</td>
-</tr>
-
-</table>
-
-</div>
-
-</footer>
-
-<script src="script.js"></script>
+<script type="module" src="./viewer.js"></script>
 
 </body>
-
 </html>
