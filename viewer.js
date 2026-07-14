@@ -72,15 +72,49 @@ const loader=new GLTFLoader();
 
 
 loader.load(
+
 "./models/model.glb",
 
 gltf=>{
 
-console.log("GLB読み込み成功");
+console.log("モデル読み込み成功");
 
 model=gltf.scene;
 
 scene.add(model);
+
+
+// サイズ確認
+const box =
+new THREE.Box3()
+.setFromObject(model);
+
+
+const size =
+box.getSize(
+new THREE.Vector3()
+);
+
+
+console.log("モデルサイズ",size);
+
+
+// 中心へ移動
+const center =
+box.getCenter(
+new THREE.Vector3()
+);
+
+
+model.position.sub(center);
+
+
+// カメラ調整
+camera.position.set(
+0,
+0,
+size.length()*1.5
+);
 
 
 },
@@ -88,33 +122,13 @@ scene.add(model);
 error=>{
 
 console.error(
-"GLB読み込み失敗",
+"読み込み失敗",
 error
 );
 
 }
 
 );
-
-
-        // サイズ調整
-        const box =
-        new THREE.Box3()
-        .setFromObject(model);
-
-
-        const size =
-        box.getSize(new THREE.Vector3())
-        .length();
-
-
-        model.scale.multiplyScalar(
-            100/size
-        );
-
-    }
-);
-
 
 
 
